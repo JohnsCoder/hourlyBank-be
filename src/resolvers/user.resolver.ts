@@ -1,13 +1,9 @@
 import Prisma, { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import { scrypt, randomFill, createCipheriv } from "node:crypto";
+import { User } from "../types/user";
 import crypt from "../utils/crypt";
-import token from "../utils/token";
-type User = {
-  username?: string;
-  email: string;
-  password: string;
-};
+import JwToken from "../utils/jwToken";
 
 const algorithm = "aes-192-cbc";
 const password = "Password used to generate key";
@@ -21,7 +17,7 @@ async function Register({ username, email, password }: User) {
         password: new crypt().encrypt(password),
       },
     })
-    .then((user) => {
+    .then(() => {
       [username, email, password].map((e) => {
         if (e === "") {
           return {
@@ -59,9 +55,8 @@ async function Login({ email, password }: User) {
       },
     })
     .then((user) => {
-      if ([user, password].map((e) => e === "")) {
+      if ([user, password].includes(null)) {
         return {
-          __typename: "message",
           message: "campo vazio",
           status: "Bad Request",
           code: 400,
@@ -69,7 +64,6 @@ async function Login({ email, password }: User) {
       }
       if (user === null) {
         return {
-          __typename: "message",
           message: "email invalido",
           status: "Not Found",
           code: 404,
@@ -81,20 +75,22 @@ async function Login({ email, password }: User) {
         key: Buffer.from(user.password.split("-")[2], "hex"),
       }) === password
         ? {
-            __typename: "message",
             payload: {
-              tokenid: token(user.id),
+              tokenid: JwToken.tokenSign(user.id),
             },
             message: "usuario autenticado",
             status: "OK",
             code: 200,
           }
         : {
-            __typename: "message",
             message: "senha incorreta",
             status: "Unauthorized",
             code: 401,
           };
     });
 }
-export { Register, Login };
+
+function Auth({ token }: { token: string }) {
+  return JwToken.tokenVerify(token);
+}
+export { Register, Login, Auth };

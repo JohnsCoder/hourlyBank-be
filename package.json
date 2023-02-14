@@ -4,7 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "tsnd --watch --rs server.ts"
+    "dev": "tsnd --watch --transpile-only --rs server.ts",
+    "secret": "cd src/ssh && ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key -P \"\" && cd ../..",
+    "prisma": "prisma generate && prisma db push"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
