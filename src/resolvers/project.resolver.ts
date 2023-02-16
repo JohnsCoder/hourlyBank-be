@@ -1,54 +1,130 @@
-import { PrismaClient } from "@prisma/client";
-import { Project } from "../types/arguments";
+import { Prisma, PrismaClient } from "@prisma/client";
+import { Daily, Project } from "../types/arguments";
 import JwToken from "../utils/jwToken";
 
 const prisma = new PrismaClient();
 
 function CreateProject(project: Project) {
+  [project.title, project.dateStart, project.dateFinish, project.description] =
+    [
+      project.title,
+      project.dateStart,
+      project.dateFinish,
+      project.description,
+    ].map((e) => e.trim());
+
+  if (
+    [
+      project.title,
+      project.dateStart,
+      project.dateFinish,
+      project.description,
+    ].includes("")
+  ) {
+    return {
+      message: "campo vazio",
+      status: "Bad Request",
+      code: 400,
+    };
+  }
+
   return prisma.project
     .create({
       data: {
-        userId: JwToken.id.id as string,
-        title: project.title as string,
+        userId: project.userId,
+        title: project.title,
         dateStart: new Date(),
         dateFinish: new Date(),
-        price: project.price as number,
-        description: project.description as string,
-        finished: project.finished as boolean,
+        price: project.price,
+        description: project.description,
+        finished: project.finished,
         daily: [],
       },
     })
-    .then((e) => console.log(e));
+    .then(() => ({
+      message: "projeto criado com sucesso!",
+      status: "Created",
+      code: 201,
+    }));
 }
 
-function GetProject() {
-  const projects = prisma.project
+async function GetProjects(project: Project) {
+  return await prisma.project
     .findMany({
       where: {
-        userId: JwToken.id.id as string,
+        userId: project.userId,
       },
     })
-    .then((e) => console.log(e.map((e) => e)));
-
-  return {
-    message: "usuario autenticado",
-    status: "OK",
-    code: 200,
-  };
+    .then((project) => ({
+      __typename: "Projects",
+      projects: project,
+    }))
+    .catch(() => ({
+      __typename: "Message",
+      message: "id invalido",
+      status: "Not Found",
+      code: 404,
+    }));
 }
 
-function UpdateProject(project: Project) {
-  console.log(project.daily);
-  return prisma.project
-    .update({
+async function UpdateProject(daily: Daily) {
+  return await prisma.project
+    .findUnique({
       where: {
-        id: project.id,
+        id: daily.id,
       },
-      data: {
-        daily: [project.daily as object],
+      select: {
+        daily: true,
       },
     })
-    .then((e) => console.log(e));
+    .then((project) => {
+      if (
+        project?.daily &&
+        typeof project?.daily === "object" &&
+        Array.isArray(project.daily)
+      ) {
+        return prisma.project
+          .update({
+            where: {
+              id: daily.id,
+            },
+            data: {
+              daily:
+                project.daily.length === 0
+                  ? [{ hour: daily.hour, day: daily.day, todo: daily.todo }]
+                  : [
+                      ...project.daily,
+                      {
+                        hour: daily.hour,
+                        day:
+                          ((
+                            project.daily[
+                              project.daily.length - 1
+                            ] as Prisma.JsonObject
+                          ).day as number) + 1,
+
+                        todo: daily.todo,
+                      },
+                    ],
+            },
+          })
+          .then(() => ({
+            message: "projto atualizado com sucesso!",
+            status: "Created",
+            code: 201,
+          }));
+      }
+    })
+    .catch(
+      () => (
+        console.log("oi"),
+        {
+          message: "id invalido",
+          status: "Not Found",
+          code: 404,
+        }
+      )
+    );
 }
 
 function DeleteProject(project: Project) {
@@ -58,7 +134,16 @@ function DeleteProject(project: Project) {
         id: project.id,
       },
     })
-    .then((e) => console.log(e));
+    .then((e) => ({
+      message: "projeto deletado",
+      status: "OK",
+      code: 200,
+    }))
+    .catch(() => ({
+      message: "id invalido",
+      status: "Not Found",
+      code: 404,
+    }));
 }
 
-export { CreateProject, GetProject, UpdateProject, DeleteProject };
+export { CreateProject, GetProjects, UpdateProject, DeleteProject };

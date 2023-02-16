@@ -1,44 +1,39 @@
 import {
   CreateProject,
   DeleteProject,
-  GetProject,
+  GetProjects,
   UpdateProject,
 } from "./resolvers/project.resolver";
 import { Auth, Login, Register } from "./resolvers/user.resolver";
-import { Payload } from "./types/arguments";
+import { Payload, Project } from "./types/arguments";
 
 const resolvers = {
   Query: {
-    async GetUser(...[, payload]: Payload) {
-      return await Login({
-        email: payload.email,
-        password: payload.password,
-      });
+    GetUser(...[, payload]: Payload) {
+      return Login(payload);
     },
-    Auth(...[, payload]: Payload) {
-      return Auth({
-        token: payload.token,
-      });
+    Auth(...[, id]: Payload) {
+      return Auth(id);
     },
-    GetProject(...[, project]: Payload) {
-      return GetProject();
+    async GetProjects(...[, projects]: Payload) {
+      return await GetProjects(projects);
     },
   },
 
   Mutation: {
-    async CreateUser(...[, user]: Payload) {
-      return await Register(user);
+    CreateUser(...[, user]: Payload) {
+      return Register(user);
     },
     CreateProject(...[, project]: Payload) {
       return CreateProject(project);
     },
-    UpdateProject(...[, project]: Payload) {
-      UpdateProject(project);
+    async UpdateProject(...[, daily]: Payload) {
+      return UpdateProject(daily);
     },
 
     DeleteProject(...[, project]: Payload) {
-      DeleteProject (project)
-    }
+      return DeleteProject(project);
+    },
   },
 };
 export default resolvers;

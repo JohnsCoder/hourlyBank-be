@@ -1,14 +1,22 @@
-import Prisma, { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import { VerifyErrors } from "jsonwebtoken";
 const prisma = new PrismaClient();
-import { scrypt, randomFill, createCipheriv } from "node:crypto";
 import { User } from "../types/user";
 import crypt from "../utils/crypt";
 import JwToken from "../utils/jwToken";
 
-const algorithm = "aes-192-cbc";
-const password = "Password used to generate key";
-
 async function Register({ username, email, password }: User) {
+  [username, email, password] = [username, email, password].map((e) =>
+    (e as string).trim()
+  );
+  if ([username, email, password].includes("")) {
+    return {
+      message: "campo vazio",
+      status: "Bad Request",
+      code: 400,
+    };
+  }
+
   return await prisma.user
     .create({
       data: {
@@ -17,28 +25,14 @@ async function Register({ username, email, password }: User) {
         password: new crypt().encrypt(password),
       },
     })
-    .then(() => {
-      [username, email, password].map((e) => {
-        if (e === "") {
-          return {
-            __typename: "message",
-            message: "campo vazio",
-            status: "Bad Request",
-            code: 400,
-          };
-        }
-      });
-      return {
-        __typename: "message",
-        message: "usuario registrado com sucesso!",
-        status: "Created",
-        code: 201,
-      };
-    })
+    .then(() => ({
+      message: "usuario registrado com sucesso!",
+      status: "Created",
+      code: 201,
+    }))
     .catch((err) => {
       if (err.code === "P2002") {
         return {
-          __typename: "message",
           message: "email já utilizado",
           status: "Bad Request",
           code: 400,
@@ -87,10 +81,25 @@ async function Login({ email, password }: User) {
             status: "Unauthorized",
             code: 401,
           };
-    });
+    })
 }
 
 function Auth({ token }: { token: string }) {
-  return JwToken.tokenVerify(token);
+  try {
+    return {
+      message: "usuario autenticado",
+      payload: {
+        id: JwToken.tokenVerify(token).id,
+      },
+      status: "OK",
+      code: 200,
+    };
+  } catch (err: any) {
+    return {
+      message: `${err.message}`,
+      status: "Unauthorized",
+      code: 401,
+    };
+  }
 }
 export { Register, Login, Auth };

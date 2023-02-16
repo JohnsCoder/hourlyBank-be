@@ -1,61 +1,64 @@
 import { gql } from "apollo-server";
 
 const typeDefs = gql`
-  type message {
-    message: String
-    payload: tokenid
-    status: String
-    code: Int
+  type Payload {
+    id: String
   }
 
-  type tokenid {
-    tokenid: String
+  type Message {
+    message: String!
+    payload: Payload
+    status: String!
+    code: Int!
   }
 
-  type User {
-    username: String
-    email: String!
-    password: String!
-  }
-
-  type Query {
-    GetUser(email: String, password: String): message
-    Auth(token: String): message
-    GetProject: message
-  }
   type Project {
-    userId: Int
-    title: String
-    dateStart: String
-    dateFinish: String
-    description: String
-    hourStart: String
-    hourFinish: Int
-    hour: String
-    finished: Boolean
+    id: String!
+    title: String!
+    dateStart: String!
+    dateFinish: String!
+    price: Int!
+    description: String!
+    finished: Boolean!
+    daily: [Daily]
   }
 
   type Daily {
-    day: Int
     hour: String
     todo: String
+    day: Int
+  }
+
+  type Projects {
+    projects: [Project]
+  }
+
+  union ReturnProjects = Projects | Message
+
+  type Query {
+    GetUser(email: String!, password: String!): Message!
+    Auth(token: String!): Message!
+    GetProjects(userId: String!): ReturnProjects
   }
 
   type Mutation {
-    CreateUser(username: String, email: String!, password: String!): message
+    CreateUser(username: String!, email: String!, password: String!): Message!
     CreateProject(
-      id: String
-      title: String
-      dateStart: String
-      dateFinish: String
-      description: String
-      hour: String
-      price: Int
-      finished: Boolean
-      userId: String
-    ): message
-    UpdateProject(day: Int, hour: String, todo: String): message
-    DeleteProject(id: String): message
+      title: String!
+      dateStart: String!
+      dateFinish: String!
+      description: String!
+      price: Int!
+      finished: Boolean!
+      userId: String!
+    ): Message
+    UpdateProject(
+      id: String!
+      day: Int!
+      hour: String!
+      todo: String!
+    ): Message!
+    DeleteProject(id: String!): Message!
   }
 `;
 export default typeDefs;
