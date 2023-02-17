@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { VerifyErrors } from "jsonwebtoken";
 const prisma = new PrismaClient();
-import { User } from "../types/user";
+import { User } from "../types/arguments";
 import crypt from "../utils/crypt";
 import JwToken from "../utils/jwToken";
 
@@ -42,6 +42,16 @@ async function Register({ username, email, password }: User) {
 }
 
 async function Login({ email, password }: User) {
+  [email, password] = [email, password].map((e) => (e as string).trim());
+
+  if ([email, password].includes("")) {
+    return {
+      message: "campo vazio",
+      status: "Bad Request",
+      code: 400,
+    };
+  }
+
   return await prisma.user
     .findUnique({
       where: {
@@ -49,13 +59,6 @@ async function Login({ email, password }: User) {
       },
     })
     .then((user) => {
-      if ([user, password].includes(null)) {
-        return {
-          message: "campo vazio",
-          status: "Bad Request",
-          code: 400,
-        };
-      }
       if (user === null) {
         return {
           message: "email invalido",
@@ -81,15 +84,15 @@ async function Login({ email, password }: User) {
             status: "Unauthorized",
             code: 401,
           };
-    })
+    });
 }
 
-function Auth({ token }: { token: string }) {
+function Auth({ token }: User) {
   try {
     return {
       message: "usuario autenticado",
       payload: {
-        id: JwToken.tokenVerify(token).id,
+        id: JwToken.tokenVerify(token as string).id,
       },
       status: "OK",
       code: 200,
@@ -102,4 +105,23 @@ function Auth({ token }: { token: string }) {
     };
   }
 }
-export { Register, Login, Auth };
+
+function DeleteUser({ id }: User) {
+  return prisma.user
+    .delete({
+      where: {
+        id: id,
+      },
+    })
+    .then(() => ({
+      message: "projeto deletado",
+      status: "OK",
+      code: 200,
+    }))
+    .catch(() => ({
+      message: "id invalido",
+      status: "Not Found",
+      code: 404,
+    }));
+}
+export { Register, Login, Auth, DeleteUser };

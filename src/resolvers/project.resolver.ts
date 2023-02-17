@@ -11,7 +11,7 @@ function CreateProject(project: Project) {
       project.dateStart,
       project.dateFinish,
       project.description,
-    ].map((e) => e.trim());
+    ].map((e) => (e as string).trim());
 
   if (
     [
@@ -31,13 +31,13 @@ function CreateProject(project: Project) {
   return prisma.project
     .create({
       data: {
-        userId: project.userId,
-        title: project.title,
+        userId: project.userId as string,
+        title: project.title as string,
         dateStart: new Date(),
         dateFinish: new Date(),
-        price: project.price,
-        description: project.description,
-        finished: project.finished,
+        price: project.price as number,
+        description: project.description as string,
+        finished: project.finished as boolean,
         daily: [],
       },
     })
@@ -79,9 +79,8 @@ async function UpdateProject(daily: Daily) {
     })
     .then((project) => {
       if (
-        project?.daily &&
-        typeof project?.daily === "object" &&
-        Array.isArray(project.daily)
+        typeof (project as { daily: Daily[] }).daily === "object" &&
+        Array.isArray((project as { daily: Daily[] }).daily)
       ) {
         return prisma.project
           .update({
@@ -90,16 +89,16 @@ async function UpdateProject(daily: Daily) {
             },
             data: {
               daily:
-                project.daily.length === 0
+                (project as { daily: Daily[] }).daily.length === 0
                   ? [{ hour: daily.hour, day: daily.day, todo: daily.todo }]
                   : [
-                      ...project.daily,
+                      ...(project as { daily: Daily[] }).daily,
                       {
                         hour: daily.hour,
                         day:
                           ((
-                            project.daily[
-                              project.daily.length - 1
+                            (project as { daily: Daily[] }).daily[
+                              (project as { daily: Daily[] }).daily.length - 1
                             ] as Prisma.JsonObject
                           ).day as number) + 1,
 
@@ -115,16 +114,11 @@ async function UpdateProject(daily: Daily) {
           }));
       }
     })
-    .catch(
-      () => (
-        console.log("oi"),
-        {
-          message: "id invalido",
-          status: "Not Found",
-          code: 404,
-        }
-      )
-    );
+    .catch(() => ({
+      message: "id invalido",
+      status: "Not Found",
+      code: 404,
+    }));
 }
 
 function DeleteProject(project: Project) {
@@ -134,7 +128,7 @@ function DeleteProject(project: Project) {
         id: project.id,
       },
     })
-    .then((e) => ({
+    .then(() => ({
       message: "projeto deletado",
       status: "OK",
       code: 200,

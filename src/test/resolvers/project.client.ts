@@ -13,14 +13,16 @@ export default class ProjectClient {
     return this.serverTest.executeOperation({
       query: gql`
         mutation CreateProject(
-          $title: String
-          $dateStart: String
-          $dateFinish: String
-          $price: Int
-          $description: String
-          $finished: Boolean
+          $userId: String!
+          $title: String!
+          $dateStart: String!
+          $dateFinish: String!
+          $price: Int!
+          $description: String!
+          $finished: Boolean!
         ) {
           CreateProject(
+            userId: $userId
             title: $title
             dateStart: $dateStart
             dateFinish: $dateFinish
@@ -35,6 +37,7 @@ export default class ProjectClient {
         }
       `,
       variables: {
+        userId: project.userId,
         title: project.title,
         dateStart: project.dateStart,
         dateFinish: project.dateFinish,
@@ -45,25 +48,52 @@ export default class ProjectClient {
     });
   }
 
-  GetProject() {
+  GetProjects({ userId }: Project) {
     return this.serverTest.executeOperation({
       query: gql`
-        query GetProject {
-          GetProject {
-            message
-            code
-            status
+        query GetProjects($userId: String!) {
+          GetProjects(userId: $userId) {
+            __typename
+            ... on Projects {
+              projects {
+                id
+                title
+                dateStart
+                dateFinish
+                description
+                price
+                finished
+                daily {
+                  hour
+                  day
+                  todo
+                }
+              }
+            }
+            ... on Message {
+              message
+              code
+              status
+            }
           }
         }
       `,
+      variables: {
+        userId: userId,
+      },
     });
   }
 
-  UpdateProject({ hour, todo, day }: Daily) {
+  UpdateProject({ id, hour, todo, day }: Daily) {
     return this.serverTest.executeOperation({
       query: gql`
-        mutation UpdateProject($day: Int, $hour: String, $todo: String) {
-          UpdateProject(day: $day, hour: $hour, todo: $todo) {
+        mutation UpdateProject(
+          $id: String!
+          $day: Int!
+          $hour: String!
+          $todo: String!
+        ) {
+          UpdateProject(id: $id, day: $day, hour: $hour, todo: $todo) {
             message
             code
             status
@@ -71,6 +101,7 @@ export default class ProjectClient {
         }
       `,
       variables: {
+        id: id,
         hour: hour,
         todo: todo,
         day: day,
@@ -81,8 +112,8 @@ export default class ProjectClient {
   DeleteProject({ id }: Project) {
     return this.serverTest.executeOperation({
       query: gql`
-        mutation DeleteProject($projectId: String) {
-          DeleteProject(id: $projectId) {
+        mutation DeleteProject($id: String!) {
+          DeleteProject(id: $id) {
             code
             message
             status
@@ -90,7 +121,7 @@ export default class ProjectClient {
         }
       `,
       variables: {
-        projectId: id,
+        id: id,
       },
     });
   }

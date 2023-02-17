@@ -3,6 +3,7 @@ import { gql } from "apollo-server";
 const typeDefs = gql`
   type Payload {
     id: String
+    tokenid: String
   }
 
   type Message {
@@ -59,6 +60,7 @@ const typeDefs = gql`
       todo: String!
     ): Message!
     DeleteProject(id: String!): Message!
+    DeleteUser(id: String!): Message!
   }
 `;
 export default typeDefs;
