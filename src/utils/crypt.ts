@@ -45,15 +45,6 @@ class crypt {
     ].join("");
   }
 }
-// const cpt = new crypt();
-// const payload = cpt.encrypt("olá meu nome é João").split("-");
 
-// console.log(
-//   cpt.decrypt({
-//     cipher: payload[0],
-//     iv: Buffer.from(payload[1], "hex"),
-//     key: Buffer.from(payload[2], "hex"),
-//   })
-// );
 
 export default crypt;

@@ -23,7 +23,8 @@ model Project {
   title       String
   dateStart   DateTime
   dateFinish  DateTime
-  price       Int
+  currency    String
+  price       Float
   description String
   finished    Boolean
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)

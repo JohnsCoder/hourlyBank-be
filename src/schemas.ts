@@ -18,14 +18,15 @@ const typeDefs = gql`
     title: String!
     dateStart: String!
     dateFinish: String!
-    price: Int!
+    currency: String!
+    price: Float!
     description: String!
     finished: Boolean!
     daily: [Daily]
   }
 
   type Daily {
-    hour: String
+    hour: Float
     todo: String
     day: Int
   }
@@ -49,16 +50,16 @@ const typeDefs = gql`
       dateStart: String!
       dateFinish: String!
       description: String!
-      price: Int!
-      finished: Boolean!
+      currency: String!
+      price: Float!
       userId: String!
     ): Message
     UpdateProject(
       id: String!
-      day: Int!
-      hour: String!
+      hour: Float!
       todo: String!
     ): Message!
+    FinishProject(id: String!): Message!
     DeleteProject(id: String!): Message!
     DeleteUser(id: String!): Message!
   }

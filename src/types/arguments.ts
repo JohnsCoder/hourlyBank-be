@@ -14,6 +14,7 @@ export type Project = {
   dateStart?: string;
   dateFinish?: string;
   description?: string;
+  currency?: string;
   price?: number;
   finished?: boolean;
   userId?: string;
@@ -22,9 +23,8 @@ export type Project = {
 
 export type Daily = {
   id?: string;
-  hour: string;
+  hour: number;
   todo: string;
-  day: number;
 };
 
 export type Payload = [_, User & Project & Daily];

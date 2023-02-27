@@ -1,11 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import { VerifyErrors } from "jsonwebtoken";
 const prisma = new PrismaClient();
 import { User } from "../types/arguments";
 import crypt from "../utils/crypt";
 import JwToken from "../utils/jwToken";
 
 async function Register({ username, email, password }: User) {
+  
+
   [username, email, password] = [username, email, password].map((e) =>
     (e as string).trim()
   );
@@ -16,6 +17,7 @@ async function Register({ username, email, password }: User) {
       code: 400,
     };
   }
+  // console.log([username, email, password]);
 
   return await prisma.user
     .create({
@@ -25,12 +27,17 @@ async function Register({ username, email, password }: User) {
         password: new crypt().encrypt(password),
       },
     })
-    .then(() => ({
-      message: "usuario registrado com sucesso!",
-      status: "Created",
-      code: 201,
-    }))
+    .then(
+      () => (
+        {
+          message: "usuario registrado com sucesso!",
+          status: "Created",
+          code: 201,
+        }
+      )
+    )
     .catch((err) => {
+      console.log(err)
       if (err.code === "P2002") {
         return {
           message: "email já utilizado",

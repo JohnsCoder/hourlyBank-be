@@ -1,9 +1,6 @@
 import Jwt, { Secret, Algorithm, JwtPayload } from "jsonwebtoken";
 import fs from "fs";
 import "dotenv";
-type id = {
-  id: string;
-};
 
 class JwToken {
   private privateKey: Secret = fs.readFileSync("./src/ssh/jwtRS256.key");
