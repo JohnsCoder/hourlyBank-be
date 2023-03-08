@@ -33,7 +33,6 @@ function CreateProject(project: Project) {
     };
   }
 
-  console.log({ projectresolver: project });
   return prisma.project
     .create({
       data: {
@@ -105,7 +104,7 @@ function UpdateProject(daily: Daily) {
             },
           })
           .then(() => ({
-            message: "projto atualizado com sucesso!",
+            message: "projeto atualizado com sucesso!",
             status: "Created",
             code: 201,
           }));

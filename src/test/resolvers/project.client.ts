@@ -17,9 +17,9 @@ export default class ProjectClient {
           $title: String!
           $dateStart: String!
           $dateFinish: String!
-          $price: Int!
+          $currency: String!
+          $price: Float!
           $description: String!
-          $finished: Boolean!
         ) {
           CreateProject(
             userId: $userId
@@ -27,8 +27,8 @@ export default class ProjectClient {
             dateStart: $dateStart
             dateFinish: $dateFinish
             description: $description
+            currency: $currency
             price: $price
-            finished: $finished
           ) {
             message
             code
@@ -43,6 +43,7 @@ export default class ProjectClient {
         dateFinish: project.dateFinish,
         description: project.description,
         price: project.price,
+        currency: project.currency,
         finished: project.finished,
       },
     });
@@ -84,16 +85,11 @@ export default class ProjectClient {
     });
   }
 
-  UpdateProject({ id, hour, todo, day }: Daily) {
+  UpdateProject({ id, hour, todo }: Daily) {
     return this.serverTest.executeOperation({
       query: gql`
-        mutation UpdateProject(
-          $id: String!
-          $day: Int!
-          $hour: String!
-          $todo: String!
-        ) {
-          UpdateProject(id: $id, day: $day, hour: $hour, todo: $todo) {
+        mutation UpdateProject($id: String!, $hour: Float!, $todo: String!) {
+          UpdateProject(id: $id, hour: $hour, todo: $todo) {
             message
             code
             status
@@ -104,7 +100,23 @@ export default class ProjectClient {
         id: id,
         hour: hour,
         todo: todo,
-        day: day,
+      },
+    });
+  }
+
+  FinishProject({ id }: { id: string }) {
+    return this.serverTest.executeOperation({
+      query: gql`
+        mutation FinishProject($id: String!) {
+          FinishProject(id: $id) {
+            message
+            code
+            status
+          }
+        }
+      `,
+      variables: {
+        id: id,
       },
     });
   }

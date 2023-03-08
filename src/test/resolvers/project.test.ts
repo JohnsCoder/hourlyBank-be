@@ -1,16 +1,15 @@
 import ProjectClient from "./project.client";
-import UserClient from "./user.client";
 
 describe("project routes", () => {
   it("create project", async () => {
     const createProject = new ProjectClient().CreateProject({
       userId: "63ef95dda04f5f53281b07d6",
       title: "DatabasePeople",
-      dateStart: "2023-02-13T16:00:59.140Z",
-      dateFinish: "2023-02-13T16:00:59.140Z",
+      dateStart: "2023-02-13",
+      dateFinish: "2023-02-13",
+      currency: "R$",
       price: 12,
       description: "Projeto criado com objetivo de uma implemetação de CRUD",
-      finished: false,
     });
 
     expect((await createProject).data).toEqual({
@@ -28,9 +27,9 @@ describe("project routes", () => {
       title: "",
       dateStart: "",
       dateFinish: "",
+      currency: "",
       price: 12,
       description: "",
-      finished: false,
     });
 
     expect((await createProject).data).toEqual({
@@ -79,42 +78,44 @@ describe("project routes", () => {
   });
 
   it("update project", async () => {
-    const id = new ProjectClient().GetProjects({
-      userId: "63ef95dda04f5f53281b07d6",
-    });
+    const id = (
+      await new ProjectClient().GetProjects({
+        userId: "63ef95dda04f5f53281b07d6",
+      })
+    ).data?.GetProjects.projects[0].id;
 
     const updateProjects = new ProjectClient().UpdateProject({
-      id: (await id).data?.GetProjects.projects[0].id,
-      hour: "8",
+      id: id,
+      hour: 8,
       todo: "anything",
-      day: 1,
     });
 
     expect((await updateProjects).data).toEqual({
       UpdateProject: {
         code: 201,
-        message: "projto atualizado com sucesso!",
+        message: "projeto atualizado com sucesso!",
         status: "Created",
       },
     });
   });
   
   it("update project", async () => {
-    const id = new ProjectClient().GetProjects({
-      userId: "63ef95dda04f5f53281b07d6",
-    });
+    const id = (
+      await new ProjectClient().GetProjects({
+        userId: "63ef95dda04f5f53281b07d6",
+      })
+    ).data?.GetProjects.projects[0].id;
 
     const updateProjects = new ProjectClient().UpdateProject({
-      id: (await id).data?.GetProjects.projects[0].id,
-      hour: "8",
+      id: id,
+      hour: 8,
       todo: "anything",
-      day: 1,
     });
 
     expect((await updateProjects).data).toEqual({
       UpdateProject: {
         code: 201,
-        message: "projto atualizado com sucesso!",
+        message: "projeto atualizado com sucesso!",
         status: "Created",
       },
     });
@@ -123,13 +124,32 @@ describe("project routes", () => {
   it("update project - exception", async () => {
     const updateProjects = new ProjectClient().UpdateProject({
       id: "siaogjdl",
-      hour: "8",
+      hour: 8,
       todo: "anything",
-      day: 1,
     });
 
     expect((await updateProjects).data).toEqual({
       UpdateProject: { code: 404, message: "id invalido", status: "Not Found" },
+    });
+  });
+
+  it("finish project", async () => {
+    const id = (
+      await new ProjectClient().GetProjects({
+        userId: "63ef95dda04f5f53281b07d6",
+      })
+    ).data?.GetProjects.projects[0].id;
+
+    const finishProjects = new ProjectClient().FinishProject({
+      id: id,
+    });
+
+    expect((await finishProjects).data).toEqual({
+      FinishProject: {
+        code: 201,
+        message: "projeto atualizado com sucesso!",
+        status: "Created",
+      },
     });
   });
 
