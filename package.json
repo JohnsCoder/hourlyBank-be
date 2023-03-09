@@ -4,7 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "start": "pm2 start ecosystem.config.js --no-daemon --env production -i max",
     "dev": "tsnd --watch --transpile-only --rs server.ts",
+    "build": "tsc",
     "secret": "cd src/ssh && ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key -P \"\" && cd ../..",
     "prisma": "prisma generate && prisma db push",
     "test": "jest --silent=false --watchAll",
@@ -26,6 +28,7 @@
     "apollo-server": "^3.11.1",
     "dotenv": "^16.0.3",
     "graphql": "^16.6.0",
-    "jsonwebtoken": "^9.0.0"
+    "jsonwebtoken": "^9.0.0",
+    "pm2": "^5.2.2"
   }
 }

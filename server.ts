@@ -9,7 +9,7 @@ import typeDefs from "./src/schemas";
     resolvers,
   });
 
-  await server.listen(8000, () =>
-    console.log("Server Running! on http://localhost:8000")
+  await server.listen(process.env.PORT || 8000, () =>
+    console.log("Server Running!")
   );
 })();
