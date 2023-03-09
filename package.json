@@ -7,7 +7,7 @@
     "start": "pm2 start ecosystem.config.js --no-daemon --env production -i max",
     "dev": "tsnd --watch --transpile-only --rs server.ts",
     "secret": "cd src && mkdir ssh && cd ssh && ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key -P \"\"  && cd ../../",
-    "build": "tsc && mkdir \"./dist/src/ssh\" && cp \"./src/ssh\" \"./dist/src/ssh\" ",
+    "build": "tsc && mkdir \"./dist/src/ssh\" && cp ./src/ssh ./dist/src/ssh ",
     "prisma": "prisma generate && prisma db push",
     "test": "jest --silent=false --watchAll",
     "test:cov": "jest --coverage"
