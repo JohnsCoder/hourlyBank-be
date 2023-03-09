@@ -6,8 +6,8 @@
   "scripts": {
     "start": "pm2 start ecosystem.config.js --no-daemon --env production -i max",
     "dev": "tsnd --watch --transpile-only --rs server.ts",
-    "build": "tsc",
-    "secret": "cd src && mkdir ssh && cd ssh && ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key -P \"\" && cd ../..",
+    "secret": "cd src && mkdir ssh && cd ssh && ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key -P \"\"  && cd ../../",
+    "build": "tsc && mkdir \"./dist/src/ssh\" && copy \"./src/ssh\" \"./dist/src/ssh\" ",
     "prisma": "prisma generate && prisma db push",
     "test": "jest --silent=false --watchAll",
     "test:cov": "jest --coverage"
