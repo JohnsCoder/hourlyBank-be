@@ -6,7 +6,7 @@ import {
   createDecipheriv,
   BinaryLike,
   CipherGCMTypes,
-} from "node:crypto";
+} from "crypto";
 import("dotenv/config");
 
 type Payload = {
