@@ -13,7 +13,7 @@ describe("user routes", () => {
       CreateUser: {
         message: "usuario registrado com sucesso!",
         status: "Created",
-        code: 201,
+        
       },
     });
   });
@@ -26,7 +26,7 @@ describe("user routes", () => {
     });
 
     expect((await empty).data).toEqual({
-      CreateUser: { code: 400, message: "campo vazio", status: "Bad Request" },
+      CreateUser: {  message: "campo vazio", status: "Bad Request" },
     });
 
     const repeated = new UserClient().CreateUser({
@@ -37,7 +37,7 @@ describe("user routes", () => {
 
     expect((await repeated).data).toEqual({
       CreateUser: {
-        code: 400,
+        
         message: "email já utilizado",
         status: "Bad Request",
       },
@@ -55,7 +55,7 @@ describe("user routes", () => {
       GetUser: {
         message: "usuario autenticado",
         status: "OK",
-        code: 200,
+        
       },
     });
   });
@@ -78,7 +78,7 @@ describe("user routes", () => {
 
     expect((await empty).data).toEqual({
       GetUser: {
-        code: 400,
+        
         message: "campo vazio",
         payload: null,
         status: "Bad Request",
@@ -87,7 +87,7 @@ describe("user routes", () => {
 
     expect((await invalid).data).toEqual({
       GetUser: {
-        code: 404,
+        
         message: "email invalido",
         payload: null,
         status: "Not Found",
@@ -95,7 +95,7 @@ describe("user routes", () => {
     });
     expect((await wrongPassword).data).toEqual({
       GetUser: {
-        code: 401,
+        
         message: "senha incorreta",
         payload: null,
         status: "Unauthorized",
@@ -118,7 +118,7 @@ describe("user routes", () => {
 
     expect((await authorize).data).toEqual({
       Auth: {
-        code: 200,
+        
         message: "usuario autenticado",
         status: "OK",
       },
@@ -132,7 +132,7 @@ describe("user routes", () => {
 
     expect((await unauthorized).data).toEqual({
       Auth: {
-        code: 401,
+        
         message: "jwt malformed",
         payload: null,
         status: "Unauthorized",
@@ -157,7 +157,7 @@ describe("user routes", () => {
     });
 
     expect((await deleteUser).data).toEqual({
-      DeleteUser: { code: 200, message: "projeto deletado", status: "OK" },
+      DeleteUser: {  message: "projeto deletado", status: "OK" },
     });
   });
   it("delete route - exception", async () => {
@@ -165,7 +165,7 @@ describe("user routes", () => {
       id: "perw",
     });
     expect((await invalidId).data).toEqual({
-      DeleteUser: { code: 404, message: "id invalido", status: "Not Found" },
+      DeleteUser: {  message: "id invalido", status: "Not Found" },
     });
   });
 });

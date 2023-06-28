@@ -12,7 +12,6 @@ async function Register({ username, email, password }: User) {
     return {
       message: "campo vazio",
       status: "Bad Request",
-      code: 400,
     };
   }
 
@@ -27,14 +26,14 @@ async function Register({ username, email, password }: User) {
     .then(() => ({
       message: "usuario registrado com sucesso!",
       status: "Created",
-      code: 201,
     }))
     .catch((err) => {
+      console.log("alou");
+      console.log(err);
       if (err.code === "P2002") {
         return {
           message: "email já utilizado",
           status: "Bad Request",
-          code: 400,
         };
       }
     });
@@ -47,7 +46,6 @@ async function Login({ email, password }: User) {
     return {
       message: "campo vazio",
       status: "Bad Request",
-      code: 400,
     };
   }
 
@@ -62,7 +60,6 @@ async function Login({ email, password }: User) {
         return {
           message: "email invalido",
           status: "Not Found",
-          code: 404,
         };
       }
       return new crypt().decrypt({
@@ -76,12 +73,10 @@ async function Login({ email, password }: User) {
             },
             message: "usuario autenticado",
             status: "OK",
-            code: 200,
           }
         : {
             message: "senha incorreta",
             status: "Unauthorized",
-            code: 401,
           };
     });
 }
@@ -94,13 +89,11 @@ function Auth({ token }: User) {
         id: JwToken.tokenVerify(token as string).id,
       },
       status: "OK",
-      code: 200,
     };
   } catch (err: any) {
     return {
       message: `${err.message}`,
       status: "Unauthorized",
-      code: 401,
     };
   }
 }
@@ -115,12 +108,10 @@ function DeleteUser({ id }: User) {
     .then(() => ({
       message: "projeto deletado",
       status: "OK",
-      code: 200,
     }))
     .catch(() => ({
       message: "id invalido",
       status: "Not Found",
-      code: 404,
     }));
 }
 export { Register, Login, Auth, DeleteUser };

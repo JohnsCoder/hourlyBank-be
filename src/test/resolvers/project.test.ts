@@ -14,7 +14,7 @@ describe("project routes", () => {
 
     expect((await createProject).data).toEqual({
       CreateProject: {
-        code: 201,
+        
         message: "projeto criado com sucesso!",
         status: "Created",
       },
@@ -34,7 +34,7 @@ describe("project routes", () => {
 
     expect((await createProject).data).toEqual({
       CreateProject: {
-        code: 400,
+        
         message: "campo vazio",
         status: "Bad Request",
       },
@@ -70,7 +70,7 @@ describe("project routes", () => {
     expect(await (await GetProjects).data).toEqual({
       GetProjects: {
         __typename: "Message",
-        code: 404,
+        
         message: "id invalido",
         status: "Not Found",
       },
@@ -92,7 +92,7 @@ describe("project routes", () => {
 
     expect((await updateProjects).data).toEqual({
       UpdateProject: {
-        code: 201,
+        
         message: "projeto atualizado com sucesso!",
         status: "Created",
       },
@@ -114,7 +114,7 @@ describe("project routes", () => {
 
     expect((await updateProjects).data).toEqual({
       UpdateProject: {
-        code: 201,
+        
         message: "projeto atualizado com sucesso!",
         status: "Created",
       },
@@ -129,7 +129,7 @@ describe("project routes", () => {
     });
 
     expect((await updateProjects).data).toEqual({
-      UpdateProject: { code: 404, message: "id invalido", status: "Not Found" },
+      UpdateProject: {  message: "id invalido", status: "Not Found" },
     });
   });
 
@@ -146,7 +146,7 @@ describe("project routes", () => {
 
     expect((await finishProjects).data).toEqual({
       FinishProject: {
-        code: 201,
+        
         message: "projeto atualizado com sucesso!",
         status: "Created",
       },
@@ -163,7 +163,7 @@ describe("project routes", () => {
     });
 
     expect((await deleteProject).data).toEqual({
-      DeleteProject: { code: 200, message: "projeto deletado", status: "OK" },
+      DeleteProject: {  message: "projeto deletado", status: "OK" },
     });
   });
 
@@ -173,7 +173,7 @@ describe("project routes", () => {
     });
 
     expect((await deleteProject).data).toEqual({
-      DeleteProject: { code: 404, message: "id invalido", status: "Not Found" },
+      DeleteProject: {  message: "id invalido", status: "Not Found" },
     });
   });
 });

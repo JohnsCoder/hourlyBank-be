@@ -19,6 +19,13 @@ const resolvers = {
     async GetProjects(...[, projects]: Payload) {
       return await GetProjects(projects);
     },
+
+    CheckHealth() {
+      return {
+        message: "server running well!",
+        status: "OK",
+      };
+    },
   },
 
   Mutation: {

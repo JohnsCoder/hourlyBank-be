@@ -10,7 +10,6 @@ const typeDefs = gql`
     message: String!
     payload: Payload
     status: String!
-    code: Int!
   }
 
   type Project {
@@ -41,6 +40,7 @@ const typeDefs = gql`
     GetUser(email: String!, password: String!): Message!
     Auth(token: String!): Message!
     GetProjects(userId: String!): ReturnProjects
+    CheckHealth: Message!
   }
 
   type Mutation {
@@ -54,11 +54,7 @@ const typeDefs = gql`
       price: Float!
       userId: String!
     ): Message
-    UpdateProject(
-      id: String!
-      hour: Float!
-      todo: String!
-    ): Message!
+    UpdateProject(id: String!, hour: Float!, todo: String!): Message!
     FinishProject(id: String!): Message!
     DeleteProject(id: String!): Message!
     DeleteUser(id: String!): Message!

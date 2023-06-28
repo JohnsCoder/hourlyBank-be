@@ -29,7 +29,6 @@ function CreateProject(project: Project) {
     return {
       message: "campo vazio",
       status: "Bad Request",
-      code: 400,
     };
   }
 
@@ -50,7 +49,6 @@ function CreateProject(project: Project) {
     .then(() => ({
       message: "projeto criado com sucesso!",
       status: "Created",
-      code: 201,
     }));
 }
 
@@ -69,7 +67,6 @@ async function GetProjects(project: Project) {
       __typename: "Message",
       message: "id invalido",
       status: "Not Found",
-      code: 404,
     }));
 }
 
@@ -106,14 +103,12 @@ function UpdateProject(daily: Daily) {
           .then(() => ({
             message: "projeto atualizado com sucesso!",
             status: "Created",
-            code: 201,
           }));
       }
     })
     .catch(() => ({
       message: "id invalido",
       status: "Not Found",
-      code: 404,
     }));
 }
 
@@ -130,7 +125,6 @@ function FinishProject(project: Project) {
     .then(() => ({
       message: "projeto atualizado com sucesso!",
       status: "Created",
-      code: 201,
     }));
 }
 
@@ -144,12 +138,10 @@ function DeleteProject(project: Project) {
     .then(() => ({
       message: "projeto deletado",
       status: "OK",
-      code: 200,
     }))
     .catch(() => ({
       message: "id invalido",
       status: "Not Found",
-      code: 404,
     }));
 }
 
