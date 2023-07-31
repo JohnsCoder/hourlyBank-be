@@ -1,5 +1,45 @@
-import { Prisma, PrismaClient } from "@prisma/client";
-import { Daily, Project } from "../types/arguments";
+import { PrismaClient } from "@prisma/client";
+import { Project } from "../entities/Project";
+import projectRepository from "../repositories/project.repository";
+import { Daily } from "../types/arguments";
+
+class ProjectService {
+  private repository = projectRepository;
+
+  CreateProject(project: Project) {
+    try {
+      this.repository.insert(project);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  GetProjects(userId: string) {
+    try {
+      this.repository.findMany(userId);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  UpdateProject(id: string, finished: boolean) {
+    try {
+      this.repository.update(id, finished);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  DeleteProject(id: string) {
+    try {
+      this.repository.delete(id);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+}
+
+export default new ProjectService();
 
 const prisma = new PrismaClient();
 
@@ -145,10 +185,10 @@ function DeleteProject(project: Project) {
     }));
 }
 
-export {
-  CreateProject,
-  GetProjects,
-  UpdateProject,
-  FinishProject,
-  DeleteProject,
-};
+// export {
+//   CreateProject,
+//   DeleteProject,
+//   FinishProject,
+//   GetProjects,
+//   UpdateProject,
+// };

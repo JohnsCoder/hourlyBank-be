@@ -1,8 +1,41 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-import { User } from "../types/arguments";
+// import { User } from "../types/arguments";
 import crypt from "../utils/crypt";
 import JwToken from "../utils/jwToken";
+import userRepository from "../repositories/user.repository";
+import { User } from "../entities/User";
+import jwToken from "../utils/jwToken";
+
+class UserService {
+  private repository = userRepository;
+
+  Register(user: User) {
+    try {
+      this.repository.insert(user);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  Login(user: User) {
+    try {
+      this.repository.findByEmail(user.email);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  Authenticate(token: string) {
+    try {
+      const { id } = jwToken.Verify(token);
+      this.repository.findById(id);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+}
+export default new UserService();
 
 async function Register({ username, email, password }: User) {
   [username, email, password] = [username, email, password].map((e) =>
@@ -69,7 +102,7 @@ async function Login({ email, password }: User) {
       }) === password
         ? {
             payload: {
-              tokenid: JwToken.tokenSign(user.id),
+              tokenid: JwToken.Sign(user.id),
             },
             message: "usuario autenticado",
             status: "OK",
@@ -81,12 +114,12 @@ async function Login({ email, password }: User) {
     });
 }
 
-function Auth({ token }: User) {
+function Auth(token: string) {
   try {
-    return {
+    return {  
       message: "usuario autenticado",
       payload: {
-        id: JwToken.tokenVerify(token as string).id,
+        id: JwToken.Verify(token as string).id,
       },
       status: "OK",
     };
@@ -114,4 +147,4 @@ function DeleteUser({ id }: User) {
       status: "Not Found",
     }));
 }
-export { Register, Login, Auth, DeleteUser };
+// export { Register, Login, Auth, DeleteUser };
