@@ -1,13 +1,12 @@
 import {
-  BinaryLike,
-  CipherGCMTypes,
+  scryptSync,
   createCipheriv,
-  createDecipheriv,
   randomBytes,
   randomFillSync,
-  scryptSync,
+  createDecipheriv,
+  BinaryLike,
+  CipherGCMTypes,
 } from "crypto";
-import("dotenv/config");
 
 class crypt {
   private algorithm = process.env.CRYPT_ALGORITHM;
@@ -33,7 +32,7 @@ class crypt {
     const cipher = hashEntries[0];
     const iv = Buffer.from(hashEntries[1], "hex");
     const key = Buffer.from(hashEntries[2], "hex");
-    
+
     const decipher = createDecipheriv(
       this.algorithm as CipherGCMTypes,
       key,

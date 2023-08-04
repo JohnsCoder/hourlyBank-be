@@ -1,13 +1,10 @@
-
 export interface Project {
   id?: string;
   title: string;
-  dateStart: string;
-  dateFinish: string;
-  description: string;
-  currency: string;
+  createdAt?: string;
   price: number;
-  finished: boolean;
+  currency: string;
+  description: string;
+  finished?: boolean;
   userId: string;
-  daily: string;
 }

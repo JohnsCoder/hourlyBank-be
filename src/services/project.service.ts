@@ -1,18 +1,17 @@
 import { Prisma } from "@prisma/client";
-import tokenVerify from "../middlewares/tokenVerify";
-import variablesVerify from "../middlewares/variablesVerify";
 import { Project } from "../entities/Project";
 import DatabaseException from "../exceptions/dbException";
+import tokenVerify from "../middlewares/tokenVerify";
 import projectRepository from "../repositories/project.repository";
 
 class ProjectService {
   private repository = projectRepository;
 
   async CreateProject(project: Project, token: string) {
-    tokenVerify(token);
-    variablesVerify(project);
+    const { id } = tokenVerify(token)!;
+
     try {
-      await this.repository.insert(project);
+      await this.repository.insert({ ...project, userId: id });
       return { message: "project sucessful created!" };
     } catch (err: any) {
       console.log(err.name);
@@ -20,16 +19,16 @@ class ProjectService {
     }
   }
 
-  async GetProjects({ userId }: Project, token: string) {
-    tokenVerify(token);
-    const projects = await this.repository.findMany(userId);
+  async GetProjects(token: string) {
+    const { id } = tokenVerify(token)!;
+    const projects = await this.repository.findMany(id);
     return { data: JSON.stringify(projects) };
   }
 
-  async CloseProject({ id, finished }: Project, token: string) {
+  async CloseProject({ id }: Project, token: string) {
     tokenVerify(token);
     try {
-      await this.repository.update(id!, finished);
+      await this.repository.update(id!, { finished: true } as Project);
       return { message: "project sucessful closed!" };
     } catch (err) {
       if (err instanceof Prisma.PrismaClientKnownRequestError)

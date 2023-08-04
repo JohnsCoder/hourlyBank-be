@@ -4,8 +4,8 @@ import { Params } from "../types/arguments";
 const service = projectService;
 export default {
   Query: {
-    GetProjects(...[, value, contextValue]: Params) {
-      return service.GetProjects(value, contextValue.token);
+    GetProjects(...[, , contextValue]: Params) {
+      return service.GetProjects(contextValue.token);
     },
   },
 

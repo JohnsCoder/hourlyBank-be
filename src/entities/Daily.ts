@@ -1,5 +1,7 @@
 export interface Daily {
   id?: string;
   hour: number;
-  todo: string;
+  description: string;
+  projectId: string;
+  hours: number;
 }

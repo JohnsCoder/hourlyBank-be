@@ -7,25 +7,17 @@ export default gql`
   }
 
   type Query {
-    GetProjects(userId: String!): Response!
-  }
-
-  input Project {
-    id: String!
-    title: String!
-    dateStart: String!
-    dateFinish: String!
-    description: String!
-    currency: String!
-    price: Float!
-    finished: Boolean!
-    userId: String!
-    daily: String!
+    GetProjects: Response!
   }
 
   type Mutation {
-    CreateProject(project: Project): Response!
-    CloseProject(id: String!, finished: Boolean!): Response!
+    CreateProject(
+      title: String!
+      price: Float!
+      currency: String!
+      description: String!
+    ): Response!
+    CloseProject(id: String!): Response!
     DeleteProject(id: String!): Response!
   }
 `;
