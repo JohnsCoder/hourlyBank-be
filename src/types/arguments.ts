@@ -1,30 +1,8 @@
-type _ = undefined;
+import { Daily } from "../entities/Daily";
+import { Project } from "../entities/Project";
+import { User } from "../entities/User";
+import { MyContext } from "./context";
 
-export type User = {
-  id?: string;
-  username?: string;
-  email?: string;
-  password?: string;
-  token?: string;
-};
+type _ = any;
 
-export type Project = {
-  id?: string;
-  title?: string;
-  dateStart?: string;
-  dateFinish?: string;
-  description?: string;
-  currency?: string;
-  price?: number;
-  finished?: boolean;
-  userId?: string;
-  daily?: Daily;
-};
-
-export type Daily = {
-  id?: string;
-  hour: number;
-  todo: string;
-};
-
-export type Payload = [_, User & Project & Daily];
+export type Params = [_, User & Project & Daily & string, MyContext];
