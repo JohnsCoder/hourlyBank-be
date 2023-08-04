@@ -1,19 +1,13 @@
 import {
-  scryptSync,
-  createCipheriv,
-  randomBytes,
-  randomFillSync,
-  createDecipheriv,
   BinaryLike,
   CipherGCMTypes,
+  createCipheriv,
+  createDecipheriv,
+  randomBytes,
+  randomFillSync,
+  scryptSync,
 } from "crypto";
 import("dotenv/config");
-
-type Payload = {
-  cipher: string;
-  iv: Buffer;
-  key: Buffer;
-};
 
 class crypt {
   private algorithm = process.env.CRYPT_ALGORITHM;
@@ -33,18 +27,23 @@ class crypt {
     )}-${this.iv.toString("hex")}-${this.key.toString("hex")}`;
   }
 
-  decrypt(hash: Payload) {
+  decrypt(hash: string) {
+    const hashEntries = hash.split("-");
+
+    const cipher = hashEntries[0];
+    const iv = Buffer.from(hashEntries[1], "hex");
+    const key = Buffer.from(hashEntries[2], "hex");
+    
     const decipher = createDecipheriv(
       this.algorithm as CipherGCMTypes,
-      hash.key,
-      hash.iv
+      key,
+      iv
     );
     return [
-      decipher.update(hash.cipher, "hex", "utf8"),
+      decipher.update(cipher, "hex", "utf8"),
       decipher.final("utf8"),
     ].join("");
   }
 }
 
-
-export default crypt;
+export default new crypt();

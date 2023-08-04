@@ -1,3 +1,5 @@
+import Jwt from "jsonwebtoken";
+import JwtException from "../exceptions/jwtException";
 import jwToken from "../utils/jwToken";
 
 export default (bearearToken: String) => {
@@ -5,6 +7,6 @@ export default (bearearToken: String) => {
   try {
     return jwToken.Verify(token);
   } catch (err) {
-    throw err;
+    if (err instanceof Jwt.JsonWebTokenError) throw JwtException(err);
   }
 };
