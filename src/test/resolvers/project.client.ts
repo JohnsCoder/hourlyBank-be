@@ -1,7 +1,8 @@
 import { ApolloServer, gql } from "apollo-server-express";
-import resolvers from "../../resolvers";
-import typeDefs from "../../schemas";
-import { Daily, Project } from "../../types/arguments";
+import resolvers from "../../resolvers/project.resolver";
+import typeDefs from "../../typeDefs/project.schema";
+import { Project } from "../../entities/Project";
+import { Daily } from "../../entities/Daily";
 
 export default class ProjectClient {
   private serverTest = new ApolloServer({
@@ -15,8 +16,7 @@ export default class ProjectClient {
         mutation CreateProject(
           $userId: String!
           $title: String!
-          $dateStart: String!
-          $dateFinish: String!
+          $createdAt: String!
           $currency: String!
           $price: Float!
           $description: String!
@@ -24,8 +24,7 @@ export default class ProjectClient {
           CreateProject(
             userId: $userId
             title: $title
-            dateStart: $dateStart
-            dateFinish: $dateFinish
+            createdAt: $createdAt
             description: $description
             currency: $currency
             price: $price
@@ -39,9 +38,8 @@ export default class ProjectClient {
       variables: {
         userId: project.userId,
         title: project.title,
-        dateStart: project.dateStart,
-        dateFinish: project.dateFinish,
         description: project.description,
+        createdAt: project.createdAt,
         price: project.price,
         currency: project.currency,
         finished: project.finished,
@@ -85,7 +83,7 @@ export default class ProjectClient {
     });
   }
 
-  UpdateProject({ id, hour, todo }: Daily) {
+  UpdateProject({ id, hours, description }: Daily) {
     return this.serverTest.executeOperation({
       query: gql`
         mutation UpdateProject($id: String!, $hour: Float!, $todo: String!) {
@@ -98,8 +96,8 @@ export default class ProjectClient {
       `,
       variables: {
         id: id,
-        hour: hour,
-        todo: todo,
+        hour: hours,
+        todo: description,
       },
     });
   }

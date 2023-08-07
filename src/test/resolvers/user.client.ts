@@ -1,7 +1,7 @@
 import { ApolloServer, gql } from "apollo-server-express";
-import resolvers from "../../resolvers";
-import typeDefs from "../../schemas";
-import { User } from "../../types/arguments";
+import resolvers from "../../resolvers/daily.resolver";
+import typeDefs from "../../typeDefs/daily.schema";
+import { User } from "../../entities/User";
 
 export default class UserClient {
   private testServer = new ApolloServer({
@@ -53,14 +53,14 @@ export default class UserClient {
     });
   }
 
-  Authorize({ token }: User) {
+  Authorize(token: String) {
     return this.testServer.executeOperation({
       query: gql`
         query Auth($token: String!) {
           Auth(token: $token) {
             message
             payload {
-            id
+              id
             }
             code
             status

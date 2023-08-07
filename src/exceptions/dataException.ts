@@ -1,8 +1,7 @@
 import { DataIntegrityError } from "../types/exceptions/DataIntegrityError";
-import { ExceptionHandler } from "./ExceptionHandler";
+import ExceptionHandler from "./ExceptionHandler";
 
-export default function DataIntegrityViolationException(
-  err: DataIntegrityError
-) {
-  return new ExceptionHandler(err).throwError();
+export default function DataIntegrityViolationException() {
+  const err = new DataIntegrityError("Empty Values");
+  return ExceptionHandler({ message: err.message, httpCode: "400" });
 }

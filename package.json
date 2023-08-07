@@ -1,11 +1,11 @@
 {
   "name": "hourlybank-be",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "license": "MIT",
   "scripts": {
-    "start": "pm2 start ecosystem.config.js --no-daemon --env production -i max",
-    "dev": "tsnd --watch --transpile-only --rs server.ts",
+    "start": "node build/src/server.js",
+    "dev": "tsnd --watch --transpile-only --rs ./src/server.ts",
     "secret": "cd src && mkdir ssh && cd ssh && ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key -P \"\"  && cd ../../",
     "build": "tsc && mkdir \"./dist/src/ssh\" && cp -r ./src/ssh ./dist/src/ssh ",
     "prisma": "prisma generate && prisma db push",
