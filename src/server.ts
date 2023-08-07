@@ -17,6 +17,7 @@ import dailyResolver from "./resolvers/daily.resolver";
       projectResolver,
       dailyResolver,
     ]),
+    introspection: !!process.env.GRAPHQL_INTROSPECTION,
   });
 
   await startStandaloneServer(server, {
@@ -25,5 +26,5 @@ import dailyResolver from "./resolvers/daily.resolver";
     },
     listen: { port: parseInt(process.env.PORT!) || 8000 },
   });
-  console.log("🚀  Server ready at localhost:8000 ");
+  console.log("🚀  Server running! ");
 })();
