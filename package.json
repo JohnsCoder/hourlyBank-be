@@ -7,7 +7,7 @@
     "start": "node build/src/server.js",
     "dev": "tsnd --watch --transpile-only --rs ./src/server.ts",
     "secret": "cd src && mkdir ssh && cd ssh && ssh-keygen -t rsa -b 4096 -m PEM -f jwtRS256.key -P \"\"  && cd ../../",
-    "build": "tsc && mkdir \"./dist/src/ssh\" && cp -r ./src/ssh ./dist/src/ssh ",
+    "build": "tsc && mkdir \"./build/src/ssh\" && cp -r ./src/ssh ./build/src/ssh ",
     "prisma": "prisma generate && prisma db push",
     "test": "jest --silent=false --watchAll",
     "test:cov": "jest --coverage"
