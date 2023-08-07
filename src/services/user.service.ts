@@ -40,7 +40,6 @@ class UserService {
 
   AuthUser(token: string) {
     tokenVerify(token);
-
     return {
       message: "Authorized!",
     };

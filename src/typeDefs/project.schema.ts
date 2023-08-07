@@ -17,6 +17,13 @@ export default gql`
       currency: String!
       description: String!
     ): Response!
+    UpdateProject(
+      id: String
+      title: String
+      price: Float
+      currency: String
+      description: String
+    ): Response!
     CloseProject(id: String!): Response!
     DeleteProject(id: String!): Response!
   }

@@ -13,6 +13,9 @@ export default {
     CreateProject(...[, value, contextValue]: Params) {
       return service.CreateProject(value, contextValue.token);
     },
+    UpdateProject(...[, value, contextValue]: Params) {
+      return service.UpdateProject(value, contextValue.token);
+    },
     CloseProject(...[, value, contextValue]: Params) {
       return service.CloseProject(value, contextValue.token);
     },

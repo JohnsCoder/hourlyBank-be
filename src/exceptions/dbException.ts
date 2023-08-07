@@ -13,6 +13,6 @@ export default function DatabaseException(
       ExecptionHandler({ message: "Could't find any value!", httpCode: "404" });
 
     default:
-      console.log(err);
+      console.log(err.message);
   }
 }

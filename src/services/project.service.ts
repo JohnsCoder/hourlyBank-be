@@ -3,6 +3,7 @@ import { Project } from "../entities/Project";
 import DatabaseException from "../exceptions/dbException";
 import tokenVerify from "../middlewares/tokenVerify";
 import projectRepository from "../repositories/project.repository";
+import variablesVerify from "../middlewares/variablesVerify";
 
 class ProjectService {
   private repository = projectRepository;
@@ -25,15 +26,29 @@ class ProjectService {
     return { data: JSON.stringify(projects) };
   }
 
+  async UpdateProject({ id, ...project }: Project, token: string) {
+    tokenVerify(token);
+    variablesVerify({ id, ...project });
+    try {
+      await this.repository.update(id!, project);
+      return { message: "project sucessful updated!" };
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError)
+        throw DatabaseException(err);
+      console.log(err);
+    }
+  }
+
   async CloseProject({ id }: Project, token: string) {
     tokenVerify(token);
+    variablesVerify({ id });
+
     try {
       await this.repository.update(id!, { finished: true } as Project);
       return { message: "project sucessful closed!" };
     } catch (err) {
       if (err instanceof Prisma.PrismaClientKnownRequestError)
         throw DatabaseException(err);
-      console.log(err);
     }
   }
 
